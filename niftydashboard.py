@@ -144,7 +144,7 @@ try:
 
 except:
 
-    st.write("Could not load Screener data")
+    st.write("Could not load Screener data :(")
 # ---------------------------------------------------
 # NIFTY50 Undervalued Stock Screener
 # ---------------------------------------------------
