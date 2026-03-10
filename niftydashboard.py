@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import requests
+from bs4 import BeautifulSoup
 
 st.title("NIFTY50 Valuation Dashboard")
 
@@ -106,32 +107,29 @@ try:
 
     url = f"https://www.screener.in/company/{symbol}/"
 
-    headers = {"User-Agent":"Mozilla/5.0"}
+    headers = {
+        "User-Agent":"Mozilla/5.0",
+        "Accept-Language":"en-US,en;q=0.9"
+    }
 
-    html = requests.get(url,headers=headers).text
+    response = requests.get(url,headers=headers)
 
-    tables = pd.read_html(html)
+    soup = BeautifulSoup(response.text,"html.parser")
 
-    holding = None
+    table = soup.find("table",{"class":"data-table"})
 
-    for table in tables:
+    if table:
 
-        if "Shareholding Pattern" in table.columns[0]:
+        df = pd.read_html(str(table))[0]
 
-            holding = table
+        df = df.set_index(df.columns[0])
 
-            break
+        df = df.iloc[:, -3:]
 
-    if holding is not None:
+        st.dataframe(df)
 
-        holding = holding.set_index(holding.columns[0])
-
-        holding = holding.iloc[:, -3:]
-
-        st.dataframe(holding)
-
-        latest = holding.iloc[:, -1]
-        prev = holding.iloc[:, -2]
+        latest = df.iloc[:, -1]
+        prev = df.iloc[:, -2]
 
         change = latest - prev
 
@@ -145,7 +143,7 @@ try:
 
 except:
 
-    st.write("Could not load Screener data :(")
+    st.write("Could not load Screener data")
 # ---------------------------------------------------
 # NIFTY50 Undervalued Stock Screener
 # ---------------------------------------------------
