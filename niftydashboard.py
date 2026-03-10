@@ -114,13 +114,17 @@ try:
     holding = None
 
     for table in tables:
-        if "Shareholding Pattern" in str(table):
+
+        if "Shareholding Pattern" in table.columns[0]:
+
             holding = table
+
             break
 
     if holding is not None:
 
         holding = holding.set_index(holding.columns[0])
+
         holding = holding.iloc[:, -3:]
 
         st.dataframe(holding)
@@ -131,16 +135,16 @@ try:
         change = latest - prev
 
         st.subheader("3 Month Change")
+
         st.table(change)
 
     else:
 
-        st.write("Holding pattern table not found")
+        st.write("Holding pattern not available")
 
 except:
 
     st.write("Could not load Screener data")
-
 # ---------------------------------------------------
 # NIFTY50 Undervalued Stock Screener
 # ---------------------------------------------------
