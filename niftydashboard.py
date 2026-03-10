@@ -97,6 +97,7 @@ else:
 # ----------------------------
 # Screener Holding Pattern
 # ----------------------------
+headers = {"User-Agent":"Mozilla/5.0"}
 st.subheader("Institutional Holding Pattern")
 
 symbol = stock.replace(".NS","")
